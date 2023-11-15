@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     environment {
         // 환경 변수 설정
         IMAGE_NAME = 'lsb8375/shinhan-cicd'
@@ -93,11 +92,11 @@ pipeline {
                     def filePath = 'shinhan-charts/shinhan-chart/values.yaml'
 
                     def newContents = """
-# Default values for esthete-user-chart.
+# Default values for shinhan-chart.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-# esthete-deployment-chart/values.yaml
+# shinhan-chart/values.yaml
 
 replicaCount: 1
 
@@ -119,7 +118,7 @@ controller:
 curl -s -X GET \\
 -H "Accept: application/vnd.github+json" \\
 -H "X-GitHub-Api-Version: 2022-11-28" \\
--H 'Authorization: Bearer ${githubToken}' https://api.github.com/repos/${githubRepo}/contents/${filePath}?ref=deployment | jq -r '.sha'
+-H 'Authorization: Bearer ${githubToken}' https://api.github.com/repos/${githubRepo}/contents/${filePath}?ref=main | jq -r '.sha'
 """, returnStdout: true)
 
                     def sha = shaOutput.trim() // 가져온 출력의 앞뒤 공백을 제거하고 저장
@@ -137,7 +136,7 @@ curl -s -X GET \\
                     sh "rm temp-new-contents.yaml"
 
                     def response = sh(script: """
-curl -X PUT -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${githubToken}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/${githubRepo}/contents/${filePath} -d '{"message": "Chore: Update values.yaml by Jenkins","content": "${base64Contents}","branch": "deployment","sha": "$sha"}'
+curl -X PUT -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${githubToken}" -H "X-GitHub-Api-Version: 2022-11-28" https://api.github.com/repos/${githubRepo}/contents/${filePath} -d '{"message": "Chore: Update values.yaml by Jenkins","content": "${base64Contents}","branch": "main","sha": "$sha"}'
 """, returnStatus: true)
 
                     if (response == 0) {
