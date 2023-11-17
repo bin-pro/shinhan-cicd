@@ -148,5 +148,23 @@ curl -X PUT -H "Accept: application/vnd.github+json" -H "Authorization: Bearer $
                 }
             }
         }
+    post {
+        success {
+            slackSend (
+                channel: '#test', 
+                color: '#00FF00', 
+                message: """
+SUCCESS: Job ${env.JOB_NAME} [${env.IMAGE_TAG}]
+"""
+            )
+        }
+        failure {
+            slackSend (
+                channel: '#test', 
+                color: '#FF0000', 
+                message: "FAIL: Job ${env.JOB_NAME} [${env.IMAGE_TAG}]"
+            )
+        }
+    }
     }
 }
