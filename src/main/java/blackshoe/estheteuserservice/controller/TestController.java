@@ -9,6 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping("/cicd")
     String test() {
-        return "Welcome to shinhan securities!";
+        return "신한투자증권 ICT 기획운영부 개인과제 제출 시연 - 인턴사원 이수빈";
     }
 }
